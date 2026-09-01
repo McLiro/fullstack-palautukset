@@ -26,6 +26,19 @@ const Counter = ({text, total }) => {
   )
 }
 
+const Statistics = ({good, neutral, bad, average, positive}) => {
+  return (
+    <>
+      <Counter text={"Good"} total={good}/>
+      <Counter text={"Neutral"} total={neutral}/>
+      <Counter text={"Bad"} total={bad}/>
+      <Counter text={"All"} total={good + neutral + bad}/>
+      <Counter text={"Average"} total={average}/>
+      <Counter text={"Positive"} total={positive}/>
+    </>
+  )
+}
+
 const App = () => {
   // tallenna napit omaan tilaansa
   const [good, setGood] = useState(0)
@@ -67,12 +80,7 @@ const App = () => {
       <Button onClick={increaseNeutral} text={"Neutral"}/>
       <Button onClick={increaseBad} text={"Bad"}/>
       <Header header={"Statistics"}/>
-      <Counter text={"Good"} total={good}/>
-      <Counter text={"Neutral"} total={neutral}/>
-      <Counter text={"Bad"} total={bad}/>
-      <Counter text={"All"} total={good + neutral + bad}/>
-      <Counter text={"Average"} total={getAverage()}/>
-      <Counter text={"Positive"} total={getPositive()}/>
+      <Statistics good={good} neutral={neutral} bad={neutral} average={getAverage()} positive={getPositive()}/>
     </div>
   )
 }
