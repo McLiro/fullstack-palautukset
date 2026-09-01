@@ -26,7 +26,12 @@ const Counter = ({text, total }) => {
   )
 }
 
-const Statistics = ({good, neutral, bad, average, positive}) => {
+const Statistics = ({good, neutral, bad, average, positive, sum}) => {
+  if (sum == 0) {
+    return (
+      <p>No feedback given</p>
+    )
+  }
   return (
     <>
       <Counter text={"Good"} total={good}/>
@@ -80,7 +85,7 @@ const App = () => {
       <Button onClick={increaseNeutral} text={"Neutral"}/>
       <Button onClick={increaseBad} text={"Bad"}/>
       <Header header={"Statistics"}/>
-      <Statistics good={good} neutral={neutral} bad={neutral} average={getAverage()} positive={getPositive()}/>
+      <Statistics good={good} neutral={neutral} bad={neutral} average={getAverage()} positive={getPositive()} sum={sum}/>
     </div>
   )
 }
