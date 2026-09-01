@@ -44,6 +44,22 @@ const App = () => {
     setBad(bad + 1)
   }
 
+  const getAverage = () => {
+    if (sum == 0) {
+      return 0
+    }
+    return ((good - bad) / sum)
+  }
+
+  const getPositive = () => {
+    if (sum == 0) {
+      return 0
+    }
+    return (good / sum)
+  }
+
+  const sum = (good + neutral + bad)
+
   return (
     <div>
       <Header header={"Give feedback"}/>
@@ -54,6 +70,9 @@ const App = () => {
       <Counter text={"Good"} total={good}/>
       <Counter text={"Neutral"} total={neutral}/>
       <Counter text={"Bad"} total={bad}/>
+      <Counter text={"All"} total={good + neutral + bad}/>
+      <Counter text={"Average"} total={getAverage()}/>
+      <Counter text={"Positive"} total={getPositive()}/>
     </div>
   )
 }
