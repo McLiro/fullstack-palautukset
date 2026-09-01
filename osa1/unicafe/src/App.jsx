@@ -18,28 +18,35 @@ const Button = ({ onClick, text }) => {
   )
 }
 
-const Counter = ({text, total }) => {
+const StatisticLine = ({text, value }) => {
   return (
     <>
-      <p>{text} {total}</p>
+      <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+      </tr>
     </>
   )
 }
 
-const Statistics = ({good, neutral, bad, average, positive, sum}) => {
-  if (sum == 0) {
+const Statistics = ({good, neutral, bad, average, positive, totalFeedback}) => {
+  if (totalFeedback == 0) {
     return (
       <p>No feedback given</p>
     )
   }
   return (
     <>
-      <Counter text={"Good"} total={good}/>
-      <Counter text={"Neutral"} total={neutral}/>
-      <Counter text={"Bad"} total={bad}/>
-      <Counter text={"All"} total={good + neutral + bad}/>
-      <Counter text={"Average"} total={average}/>
-      <Counter text={"Positive"} total={positive}/>
+      <table>
+        <tbody>
+          <StatisticLine text={"Good"} value={good}/>
+          <StatisticLine text={"Neutral"} value={neutral}/>
+          <StatisticLine text={"Bad"} value={bad}/>
+          <StatisticLine text={"All"} value={good + neutral + bad}/>
+          <StatisticLine text={"Average"} value={average}/>
+          <StatisticLine text={"Positive"} value={positive}/>
+        </tbody>
+      </table>
     </>
   )
 }
@@ -63,20 +70,20 @@ const App = () => {
   }
 
   const getAverage = () => {
-    if (sum == 0) {
+    if (totalFeedback == 0) {
       return 0
     }
-    return ((good - bad) / sum)
+    return ((good - bad) / totalFeedback)
   }
 
   const getPositive = () => {
-    if (sum == 0) {
+    if (totalFeedback == 0) {
       return 0
     }
-    return (good / sum)
+    return (good / totalFeedback)
   }
 
-  const sum = (good + neutral + bad)
+  const totalFeedback = (good + neutral + bad)
 
   return (
     <div>
@@ -85,7 +92,7 @@ const App = () => {
       <Button onClick={increaseNeutral} text={"Neutral"}/>
       <Button onClick={increaseBad} text={"Bad"}/>
       <Header header={"Statistics"}/>
-      <Statistics good={good} neutral={neutral} bad={neutral} average={getAverage()} positive={getPositive()} sum={sum}/>
+      <Statistics good={good} neutral={neutral} bad={neutral} average={getAverage()} positive={getPositive()} totalFeedback={totalFeedback}/>
     </div>
   )
 }
