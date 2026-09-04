@@ -21,11 +21,14 @@ const PersonForm = ({ addName, handleNumberChange, handleNameChange }) => {
   )
 }
 
-const Persons = ({ personsToShow }) => {
+const Persons = ({ personsToShow, deletePerson }) => {
   return (
     <>
       {personsToShow.map(person =>
-        <p key={person.name}>{person.name} {person.number}</p>
+        <div key={person.name}>
+          <span>{person.name} {person.number} </span>
+          <button onClick={() => deletePerson(person.id, person.name)}>Delete</button>
+        </div>
       )}
     </>
   )
@@ -34,7 +37,7 @@ const Persons = ({ personsToShow }) => {
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState(0)
+  const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
 
   useEffect(() => {
@@ -51,8 +54,21 @@ const App = () => {
     if (persons.some(person => person.name === newName)) {
       alert(`${newName} is already added to the phonebook!`)
     } else {
-      setPersons(persons.concat(nameObject))
       personService.create(nameObject)
+        .then(createdPerson => {
+          setPersons(persons.concat(createdPerson))
+          setNewName('')
+          setNewNumber('')
+        })
+    }
+  }
+
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personService.deletePerson(id)
+        .then(() => {
+          setPersons(prev => prev.filter(person => person.id !== id))
+        })
     }
   }
 
@@ -79,7 +95,7 @@ const App = () => {
       <h2>Add a new</h2>
       <PersonForm addName={addName} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow}/>
+      <Persons personsToShow={personsToShow} deletePerson={deletePerson}/>
     </div>
   )
 
