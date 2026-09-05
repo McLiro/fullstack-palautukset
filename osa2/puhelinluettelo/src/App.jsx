@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 import Notification from './components/Notification'
+import Error from './components/Error'
 
 const Filter = ({ filter }) => {
   return (
@@ -41,6 +42,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [notification, setNotification] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     personService.getAll()
@@ -67,19 +69,22 @@ const App = () => {
             setPersons(prev =>
               prev.map(p => p.id === returnedPerson.id ? returnedPerson : p)
             )
+            setNotification(`Modified ${newName}`)
+            setTimeout(() => {setNotification(null)}, 3000)
           })
-
-        setNotification(`Modified ${newName}`)
-        setTimeout(() => {setNotification(null)}, 3000)
+          .catch(error => {
+            setError(`The information of ${newName} has already been deleted from the server.`)
+            setTimeout(() => {setError(null)}, 3000)
+          })
       }
       return
     } else {
       personService.create(nameObject)
         .then(createdPerson => {
           setPersons(persons.concat(createdPerson))
+          setNotification(`Added ${newName}`)
+          setTimeout(() => {setNotification(null)}, 3000)
         })
-      setNotification(`Added ${newName}`)
-      setTimeout(() => {setNotification(null)}, 3000)
     }
   }
 
@@ -88,9 +93,9 @@ const App = () => {
       personService.deletePerson(id)
         .then(() => {
           setPersons(prev => prev.filter(person => person.id !== id))
+          setNotification(`Deleted ${name}`)
+          setTimeout(() => {setNotification(null)}, 3000)
         })
-      setNotification(`Deleted ${name}`)
-      setTimeout(() => {setNotification(null)}, 3000)
     }
   }
 
@@ -114,6 +119,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={notification}/>
+      <Error message={error}/>
       <Filter filter={handleFilterChange}/>
       <h2>Add a new</h2>
       <PersonForm addName={addName} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
