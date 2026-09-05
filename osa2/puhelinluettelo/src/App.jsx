@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const Filter = ({ filter }) => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     personService.getAll()
@@ -66,6 +68,9 @@ const App = () => {
               prev.map(p => p.id === returnedPerson.id ? returnedPerson : p)
             )
           })
+
+        setNotification(`Modified ${newName}`)
+        setTimeout(() => {setNotification(null)}, 3000)
       }
       return
     } else {
@@ -73,6 +78,8 @@ const App = () => {
         .then(createdPerson => {
           setPersons(persons.concat(createdPerson))
         })
+      setNotification(`Added ${newName}`)
+      setTimeout(() => {setNotification(null)}, 3000)
     }
   }
 
@@ -82,6 +89,8 @@ const App = () => {
         .then(() => {
           setPersons(prev => prev.filter(person => person.id !== id))
         })
+      setNotification(`Deleted ${name}`)
+      setTimeout(() => {setNotification(null)}, 3000)
     }
   }
 
@@ -104,6 +113,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification}/>
       <Filter filter={handleFilterChange}/>
       <h2>Add a new</h2>
       <PersonForm addName={addName} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
