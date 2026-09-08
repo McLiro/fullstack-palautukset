@@ -37,11 +37,29 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
-    const person = request.body
-    person.id = Math.floor(Math.random() * 10000000)
-    persons.concat(person)
+    const { name, number } = request.body
 
-    response.json(person)
+    if (!name || !number) {
+        return response.status(400).json({
+            error: 'Name and a number required.'
+        })
+    }
+
+    const existing = persons.find(person => person.name === name)
+    if (existing) {
+        return response.status(409).json({
+            error: 'Name must be unique.'
+        })
+    }
+
+    const newPerson = {
+        id: String(Math.floor(Math.random() * 10000000)),
+        name,
+        number
+    }
+    persons = persons.concat(newPerson)
+
+    response.json(newPerson)
 })
 
 app.delete('/api/persons/:id', (request, response) => {
