@@ -87,6 +87,22 @@ app.get('/info', (request, response) => {
     response.send(info)
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const id = request.params.id
+  const { name, number } = request.body
+
+  Person.findById(id)
+    .then(person => {
+      person.name = name
+      person.number = number
+
+      return person.save().then(updatedPerson => {
+        response.json(updatedPerson)
+      })
+    })
+    .catch(error => next(error))
+})
+
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
