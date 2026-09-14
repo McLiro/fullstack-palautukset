@@ -33,10 +33,12 @@ let persons = [
     }
 ]
 
-app.get('/api/persons', (request, response) => {
-  Person.find({}).then(result => {
-    response.json(result)
-  })
+app.get('/api/persons', (request, response, next) => {
+  Person.find({})
+    .then(result => {
+      response.json(result)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response) => {
@@ -50,7 +52,7 @@ app.get('/api/persons/:id', (request, response) => {
     }
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const { name, number } = request.body
 
   if (!name || !number) {
@@ -64,22 +66,38 @@ app.post('/api/persons', (request, response) => {
     number: number
   })
 
-  newPerson.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
+  newPerson.save()
+    .then(savedPerson => {
+      response.json(savedPerson)
+    })
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
-  Person.findByIdAndDelete(id).then(result => {
-    response.status(204).end()
-  })
+  Person.findByIdAndDelete(id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 app.get('/info', (request, response) => {
     const info = `<div>Phonebook has info for ${persons.length} people.</div><div>${Date().toString()}</div>`
     response.send(info)
 })
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
