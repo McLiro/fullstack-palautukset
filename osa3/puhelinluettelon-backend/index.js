@@ -10,8 +10,8 @@ app.use(express.json())
 app.use(cors())
 
 morgan.token('body', (req) => {
-  return req.body ? JSON.stringify(req.body) : '';
-});
+  return req.body ? JSON.stringify(req.body) : ''
+})
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
@@ -61,7 +61,7 @@ app.post('/api/persons', (request, response, next) => {
 app.delete('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
   Person.findByIdAndDelete(id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
