@@ -19,7 +19,7 @@ test('get returns correct amount of blogs as json', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-  assert.strictEqual(response.body.length, 6)
+  assert.strictEqual(response.body.length, 5)
 })
 
 test('ids are formed correctly', async () => {
@@ -30,6 +30,22 @@ test('ids are formed correctly', async () => {
     assert.ok(blog.id)
     assert.strictEqual(blog._id, undefined)
   })
+})
+
+test('blog gets added correctly', async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.testBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api
+    .get('/api/blogs')
+
+  assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
+
+  const titles = response.body.map(b => b.title)
+  assert(titles.includes('Type wars'))
 })
 
 after(async () => {
