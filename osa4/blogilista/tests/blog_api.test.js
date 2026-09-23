@@ -50,11 +50,9 @@ test('blog gets added correctly', async () => {
 
 test('blog with undefined likes gets added with zero likes', async () => {
   const noLikesBlog = {
-  _id: "5a422bc61b54a676234d17fc",
   title: "Type wars",
   author: "Robert C. Martin",
-  url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-  __v: 0
+  url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html"
   }
 
   const response = await api
@@ -62,6 +60,42 @@ test('blog with undefined likes gets added with zero likes', async () => {
     .send(noLikesBlog)
 
   assert.strictEqual(response.body.likes, 0)
+})
+
+test('blog with no title gets response code 400', async () => {
+  const noTitleBlog = {
+  author: "Robert C. Martin",
+  url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+  likes: 2
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(noTitleBlog)
+    .expect(400)
+
+  const response = await api
+    .get('/api/blogs')
+
+  assert.strictEqual(response.body.length, helper.initialBlogs.length)
+})
+
+test('blog with no url gets response 400', async () => {
+  const noTitleBlog = {
+  title: "Type wars",
+  author: "Robert C. Martin",
+  likes: 2
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(noTitleBlog)
+    .expect(400)
+
+  const response = await api
+    .get('/api/blogs')
+
+  assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
 after(async () => {
