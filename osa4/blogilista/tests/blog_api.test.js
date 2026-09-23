@@ -98,6 +98,36 @@ test('blog with no url gets response 400', async () => {
   assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
+test('blog gets deleted correctly', async () => {
+  const blogId = helper.initialBlogs[0]._id
+  await api
+    .delete(`/api/blogs/${blogId}`)
+    .expect(204)
+
+  const response = await api
+    .get('/api/blogs')
+
+  assert.strictEqual(response.body.length, helper.initialBlogs.length - 1)
+
+  const titles = response.body.map(b => b.title)
+  assert(!titles.includes('React patterns'))
+})
+
+test('blog gets modified correcly', async () => {
+  const oldBlog = helper.initialBlogs[0]
+
+  await api
+    .put(`/api/blogs/${oldBlog._id}`)
+    .send({ likes: 500 })
+    .expect(200)
+
+  const response = await api
+    .get('/api/blogs')
+
+  const updated = response.body.find(b => b.id === oldBlog._id)
+  assert.strictEqual(updated.likes, 500)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
