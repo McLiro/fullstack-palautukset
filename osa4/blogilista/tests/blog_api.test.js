@@ -48,6 +48,22 @@ test('blog gets added correctly', async () => {
   assert(titles.includes('Type wars'))
 })
 
+test('blog with undefined likes gets added with zero likes', async () => {
+  const noLikesBlog = {
+  _id: "5a422bc61b54a676234d17fc",
+  title: "Type wars",
+  author: "Robert C. Martin",
+  url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+  __v: 0
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(noLikesBlog)
+
+  assert.strictEqual(response.body.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
