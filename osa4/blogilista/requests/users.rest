@@ -1,0 +1,27 @@
+### create a new user
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "CR7",
+  "name": "Cristiano Ronaldo",
+  "password": "salasana1"
+}
+
+### create a user with a missing username
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "name": "Cristiano Ronaldo",
+  "password": "salasana1"
+}
+
+### create a user with a missing password
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "CR7",
+  "name": "Cristiano Ronaldo"
+}

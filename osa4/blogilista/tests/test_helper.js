@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const initialBlogs = [{
   _id: "5a422a851b54a676234d17f7",
@@ -50,4 +51,23 @@ const testBlog = {
   __v: 0
 }
 
-module.exports = { initialBlogs, testBlog }
+const initialUsers = [
+  {
+    "username": "Koodari123",
+    "name": "Markus Heinola",
+    "passwordHash": "testpass123"
+  },
+  {
+    "username": "Joulupukki",
+    "name": "Joulu Pukki",
+    "passwordHash": "mitenmenee"
+  }
+]
+
+const testUser = {
+  "username": "CR7",
+  "name": "Cristiano Ronaldo",
+  "password": "haloohaloo"
+}
+
+module.exports = { initialBlogs, testBlog, initialUsers, testUser }
