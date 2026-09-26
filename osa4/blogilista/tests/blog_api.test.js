@@ -1,16 +1,30 @@
 const { test, after, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const assert = require('assert')
+
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const app = require('../app')
-const assert = require('assert')
 
 const api = supertest(app)
 
+let token
+let userId
+
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
+  await User.deleteMany({})
+
+  const auth = await helper.createUserAndGetToken(api)
+  token = auth.token
+
+  const user = await User.findOne({ username: 'root' })
+  userId = user._id
+
+  const blogsWithUser = helper.initialBlogs.map(b => ({ ...b, user: userId }))
+  await Blog.insertMany(blogsWithUser)
 })
 
 test('get returns correct amount of blogs as json', async () => {
@@ -35,6 +49,7 @@ test('ids are formed correctly', async () => {
 test('blog gets added correctly', async () => {
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(helper.testBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -57,6 +72,7 @@ test('blog with undefined likes gets added with zero likes', async () => {
 
   const response = await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(noLikesBlog)
 
   assert.strictEqual(response.body.likes, 0)
@@ -71,6 +87,7 @@ test('blog with no title gets response code 400', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(noTitleBlog)
     .expect(400)
 
@@ -89,6 +106,7 @@ test('blog with no url gets response 400', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(noTitleBlog)
     .expect(400)
 
@@ -102,6 +120,7 @@ test('blog gets deleted correctly', async () => {
   const blogId = helper.initialBlogs[0]._id
   await api
     .delete(`/api/blogs/${blogId}`)
+    .set('Authorization', `Bearer ${token}`)
     .expect(204)
 
   const response = await api
@@ -126,6 +145,18 @@ test('blog gets modified correcly', async () => {
 
   const updated = response.body.find(b => b.id === oldBlog._id)
   assert.strictEqual(updated.likes, 500)
+})
+
+test('blog does not get added without a token', async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.testBlog)
+    .expect(401)
+
+  const response = await api
+    .get('/api/blogs')
+
+  assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
 after(async () => {

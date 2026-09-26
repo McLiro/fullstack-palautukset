@@ -70,4 +70,16 @@ const testUser = {
   "password": "haloohaloo"
 }
 
-module.exports = { initialBlogs, testBlog, initialUsers, testUser }
+const createUserAndGetToken = async (api) => {
+  const user = { username: 'root', name: 'Superuser', password: 'sekret' }
+  await api.post('/api/users').send(user).expect(201)
+
+  const login = await api
+    .post('/api/login')
+    .send({ username: user.username, password: user.password })
+    .expect(200)
+
+  return { token: login.body.token, user: login.body }
+}
+
+module.exports = { initialBlogs, testBlog, initialUsers, testUser, createUserAndGetToken }
