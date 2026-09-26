@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const config = require('./utils/config')
-const extractToken = require('./middleware/token')
+const { extractToken } = require('./middleware')
 const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
