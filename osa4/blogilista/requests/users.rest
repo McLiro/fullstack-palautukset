@@ -3,7 +3,7 @@ POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-  "username": "CR7",
+  "username": "CR10",
   "name": "Cristiano Ronaldo",
   "password": "salasana1"
 }

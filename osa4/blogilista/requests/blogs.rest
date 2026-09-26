@@ -12,3 +12,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNSN
   "url": "testUrl",
   "likes": 15
 }
+
+### delete a blog
+DELETE http://localhost:3003/api/blogs/6ab7d9a36496923afb7818f8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNSNyIsImlkIjoiNmFiNjkwOTI5Nzc4ZWQ2NWU0YmQ0ZjdiIiwiaWF0IjoxNzkwNDMyNzA4fQ.vXqJ1NKyR9-xvyvNXDre7CwO5yXJ-58DAQVaD4c3nQs
+
+### delete a blog
+DELETE http://localhost:3003/api/blogs/6ab7d9a36496923afb7818f8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNSMTAiLCJpZCI6IjZhYjdkYzdiODAyM2ZkMTA4ZTE3MzYwZSIsImlhdCI6MTc5MDQzNDQ0OH0.ezm62Yaty2GajapEBF922yYQKDkrJOLK3YCc9fs_DtI
