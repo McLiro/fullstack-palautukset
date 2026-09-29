@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
@@ -8,6 +9,7 @@ import loginService from './services/login'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs => setBlogs(blogs))
@@ -32,7 +34,7 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
     } catch {
-      console.log('wrong credentials')
+      notify('invalid credentials', 'error')
     }
   }
 
@@ -46,17 +48,31 @@ const App = () => {
     try {
       const newBlog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(newBlog))
+      notify(`a new blog ${newBlog.title} by ${newBlog.author} added.`)
     } catch {
-      console.log('failed to create blog')
+      notify('failed to create new blog', 'error')
     }
   }
 
+  const notify = (message, type = 'success') => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification(null)
+    }, 3000)
+  }
+
   if (user === null) {
-    return <LoginForm handleLogin={handleLogin} />
+    return (
+      <div>
+        <Notification message={notification?.message} type={notification?.type} />
+        <LoginForm handleLogin={handleLogin} />
+      </div>
+    )
   }
 
   return (
     <div>
+      <Notification message={notification?.message} type={notification?.type} />
       <h2>Blogs</h2>
       <div>
         {user.name} logged in.
