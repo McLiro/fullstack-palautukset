@@ -69,6 +69,14 @@ const App = () => {
     )
   }
 
+  const handleDelete = async (blog) => {
+    if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) return
+
+    await blogService.remove(blog.id)
+    setBlogs(prev => prev.filter(b => b.id !== blog.id))
+    notify(`removed ${blog.title}`)
+  }
+
   const notify = (message, type = 'success') => {
     setNotification({ message, type })
     setTimeout(() => {
@@ -100,7 +108,7 @@ const App = () => {
       </Togglable>
 
       {sortedBlogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+        <Blog key={blog.id} blog={blog} user={user} handleLike={handleLike} handleDelete={handleDelete}/>
       )}
     </div>
   )

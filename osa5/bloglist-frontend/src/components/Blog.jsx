@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, user, handleLike, handleDelete }) => {
   const [expanded, setExpanded] = useState(false)
 
   const blogStyle = {
@@ -10,6 +10,8 @@ const Blog = ({ blog, handleLike }) => {
     borderWidth: 1,
     marginBottom: 5
   }
+
+  const isOwner = blog.user && user && blog.user.username === user.username
 
   if (expanded) {
     return (
@@ -23,6 +25,12 @@ const Blog = ({ blog, handleLike }) => {
           <button onClick={() => handleLike(blog)}>like</button>
         </div>
         <div>{blog.author}</div>
+
+        {isOwner && (
+          <div>
+            <button onClick={() => handleDelete(blog)}>remove</button>
+          </div>
+        )}
       </div>
     )
   }
