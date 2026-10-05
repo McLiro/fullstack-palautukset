@@ -11,6 +11,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs => setBlogs(blogs))
@@ -49,11 +50,22 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       const newBlog = await blogService.create({ title, author, url })
-      setBlogs(blogs.concat(newBlog))
+      setBlogs(prevBlogs => prevBlogs.concat(newBlog))
       notify(`a new blog ${newBlog.title} by ${newBlog.author} added.`)
     } catch {
       notify('failed to create new blog', 'error')
     }
+  }
+
+  const handleLike = async (blog) => {
+    const updated = await blogService.update({
+      ...blog,
+      likes: blog.likes + 1
+    })
+
+    setBlogs(prevBlogs =>
+      prevBlogs.map(b => (b.id === updated.id ? updated : b))
+    )
   }
 
   const notify = (message, type = 'success') => {
@@ -62,8 +74,6 @@ const App = () => {
       setNotification(null)
     }, 3000)
   }
-
-  const blogFormRef = useRef()
 
   if (user === null) {
     return (
@@ -89,7 +99,7 @@ const App = () => {
       </Togglable>
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
       )}
     </div>
   )
