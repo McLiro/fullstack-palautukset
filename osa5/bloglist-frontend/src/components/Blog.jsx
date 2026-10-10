@@ -15,13 +15,13 @@ const Blog = ({ blog, user, handleLike, handleDelete }) => {
 
   if (expanded) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} data-testid="blog">
         <div>
           {blog.title} <button onClick={() => setExpanded(false)}>hide</button>
         </div>
         <div>{blog.url}</div>
         <div>
-          likes {blog.likes}{' '}
+          <span data-testid="likes">likes {blog.likes}</span>{' '}
           <button onClick={() => handleLike(blog)}>like</button>
         </div>
         <div>{blog.author}</div>
@@ -36,7 +36,7 @@ const Blog = ({ blog, user, handleLike, handleDelete }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} data-testid="blog">
       {blog.title} <button onClick={() => setExpanded(true)}>view</button>
     </div>
   )
