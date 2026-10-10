@@ -56,4 +56,23 @@ describe('Blog app', () => {
       await expect(page.getByText('testTitle view')).toBeVisible()
     })
   })
+
+  describe('When blogs have been posted', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByRole('textbox', { name: 'username' }).fill('mluukkai')
+      await page.getByRole('textbox', { name: 'password' }).fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click()
+      await page.getByRole('button', { name: 'Create new blog' }).click()
+      await page.getByLabel('title:').fill('testTitle')
+      await page.getByLabel('author:').fill('testAuthor')
+      await page.getByLabel('url:').fill('testUrl')
+      await page.getByRole('button', { name: 'Create' }).click()
+    })
+
+    test('a blog can be liked', async ({ page }) => {
+      await page.getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'like' }).click()
+      await expect(page.getByText('likes 1')).toBeVisible()
+    })
+  })
 })
